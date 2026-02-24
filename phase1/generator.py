@@ -4,7 +4,7 @@ import random
 
 def generate_random_points(num_points, x, y):
     points = []
-    for _ in range(num_points):
+    for point in range(num_points):
         points.append((random.randint(0, x), random.randint(0, y)))
     return points
 
@@ -18,4 +18,3 @@ def main():
 
 if __name__ == "__main__":
     main()  
-    
