@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <style>
+      .cell { fill: none; }
+      .boundary { stroke: #333333; stroke-width: 1.0; fill: none; stroke-linejoin: round; }
+      .seed { fill: #ff0000; }
+    </style>
+  </defs>
+  <g>
+    <path class="cell boundary" d="M 270.78 299.62 L 360.22 351.26 L 360.22 493.56 L 148.08 387.48 L 201.11 334.45 Z"/>
+    <path class="cell boundary" d="M 360.22 351.26 L 360.22 493.56 L 551.15 302.63 L 501.64 269.61 Z"/>
+    <path class="cell boundary" d="M 328.54 223.21 L 439.78 197.15 L 501.64 269.61 L 360.22 351.26 L 270.78 299.62 Z"/>
+    <path class="cell boundary" d="M 439.78 197.15 L 439.78 20.73 L 598.89 112.60 L 598.89 314.56 L 551.15 302.63 L 501.64 269.61 Z"/>
+    <path class="cell boundary" d="M 598.89 314.56 L 686.40 358.31 L 686.40 62.07 L 598.89 112.60 Z"/>
+    <path class="cell boundary" d="M 439.60 20.00 L 439.78 20.73 L 598.89 112.60 L 686.40 62.07 L 686.40 20.00 Z"/>
+    <path class="cell boundary" d="M 201.11 192.15 L 113.60 141.63 L 113.60 396.10 L 148.08 387.48 L 201.11 334.45 Z"/>
+    <path class="cell boundary" d="M 201.11 192.15 L 201.11 334.45 L 270.78 299.62 L 328.54 223.21 L 262.21 156.88 Z"/>
+    <path class="cell boundary" d="M 201.11 192.15 L 113.60 141.63 L 113.60 20.00 L 249.98 20.00 L 262.21 156.88 Z"/>
+    <path class="cell boundary" d="M 598.89 314.56 L 686.40 358.31 L 686.40 580.00 L 389.04 580.00 L 360.22 493.56 L 551.15 302.63 Z"/>
+    <path class="cell boundary" d="M 113.60 580.00 L 113.60 396.10 L 148.08 387.48 L 360.22 493.56 L 389.04 580.00 Z"/>
+    <path class="cell boundary" d="M 262.21 156.88 L 249.98 20.00 L 439.60 20.00 L 439.78 20.73 L 439.78 197.15 L 328.54 223.21 Z"/>
+    <circle class="seed" cx="320.45" cy="374.22" r="3.0"/>
+    <circle class="seed" cx="400.00" cy="374.22" r="3.0"/>
+    <circle class="seed" cx="360.22" cy="305.33" r="3.0"/>
+    <circle class="seed" cx="559.11" cy="135.56" r="3.0"/>
+    <circle class="seed" cx="638.66" cy="135.56" r="3.0"/>
+    <circle class="seed" cx="598.89" cy="66.67" r="3.0"/>
+    <circle class="seed" cx="161.34" cy="215.12" r="3.0"/>
+    <circle class="seed" cx="240.89" cy="215.12" r="3.0"/>
+    <circle class="seed" cx="201.11" cy="146.22" r="3.0"/>
+    <circle class="seed" cx="479.55" cy="453.78" r="3.0"/>
+    <circle class="seed" cx="240.89" cy="533.33" r="3.0"/>
+    <circle class="seed" cx="320.45" cy="135.56" r="3.0"/>
+  </g>
+</svg>

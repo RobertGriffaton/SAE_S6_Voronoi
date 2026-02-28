@@ -1,0 +1,23 @@
+# Example points file for Voronoi diagram generation
+# Format: x,y (one point per line)
+# Lines starting with # are comments
+
+# First cluster
+0,0
+1,0
+0.5,0.866
+
+# Second cluster
+3,3
+4,3
+3.5,3.866
+
+# Third cluster
+-2,2
+-1,2
+-1.5,2.866
+
+# Additional points
+2,-1
+-1,-2
+0,3
