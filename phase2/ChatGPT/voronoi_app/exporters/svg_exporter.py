@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from voronoi_app.constants import POINT_RADIUS
-from voronoi_app.models import Point
+from voronoi_app.constants import CELL_OPACITY, EDGE_WIDTH, POINT_RADIUS, SITE_OUTLINE_WIDTH
+from voronoi_app.models import Point, Segment
 from voronoi_app.services.diagram_service import VoronoiDiagram
+from voronoi_app.theme import CANVAS_BACKGROUND_COLOR, EDGE_COLOR, SITE_COLOR, get_cell_color
 
 
 class SvgExporter:
@@ -29,28 +30,39 @@ class SvgExporter:
                 f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{min_x} {min_y} {width} {height}" '
                 f'width="{width}" height="{height}">'
             ),
-            '<rect width="100%" height="100%" fill="white"/>',
+            f'<rect width="100%" height="100%" fill="{CANVAS_BACKGROUND_COLOR}"/>',
         ]
 
-        for segment in diagram.segments:
+        for index, site in enumerate(diagram.sites):
+            polygon = diagram.cells.get(site, [])
+            if len(polygon) < 3:
+                continue
+            fill_color = get_cell_color(index)
+            points_attribute = " ".join(f"{vertex.x},{vertex.y}" for vertex in polygon)
             lines.append(
-                (
-                    f'<line x1="{segment.start.x}" y1="{segment.start.y}" '
-                    f'x2="{segment.end.x}" y2="{segment.end.y}" '
-                    'stroke="black" stroke-width="0.5"/>'
-                )
+                f'<polygon points="{points_attribute}" fill="{fill_color}" fill-opacity="{CELL_OPACITY}" stroke="none"/>'
             )
+
+        for segment in diagram.segments:
+            lines.append(self._line_svg(segment))
 
         for site in diagram.sites:
             lines.append(
                 (
                     f'<circle cx="{site.x}" cy="{site.y}" r="{POINT_RADIUS}" '
-                    'fill="red"/>'
+                    f'fill="{SITE_COLOR}" stroke="{EDGE_COLOR}" stroke-width="{SITE_OUTLINE_WIDTH}"/>'
                 )
             )
 
         lines.append("</svg>")
         path.write_text("\n".join(lines), encoding="utf-8")
+
+    def _line_svg(self, segment: Segment) -> str:
+        return (
+            f'<line x1="{segment.start.x}" y1="{segment.start.y}" '
+            f'x2="{segment.end.x}" y2="{segment.end.y}" '
+            f'stroke="{EDGE_COLOR}" stroke-width="{EDGE_WIDTH}"/>'
+        )
 
     def _compute_bounds(self, points: list[Point]) -> tuple[float, float, float, float]:
         min_x = min(point.x for point in points)

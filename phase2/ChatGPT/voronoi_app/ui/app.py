@@ -6,12 +6,36 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, messagebox
 
-from voronoi_app.constants import CANVAS_HEIGHT, CANVAS_PADDING, CANVAS_WIDTH, POINT_RADIUS
+from voronoi_app.constants import (
+    CANVAS_HEIGHT,
+    CANVAS_PADDING,
+    CANVAS_WIDTH,
+    CONTROL_SPACING,
+    EDGE_WIDTH,
+    FRAME_PADDING,
+    POINT_RADIUS,
+    SITE_OUTLINE_WIDTH,
+    WINDOW_MIN_HEIGHT,
+    WINDOW_MIN_WIDTH,
+)
 from voronoi_app.exporters.image_exporter import ImageExporter
 from voronoi_app.exporters.svg_exporter import SvgExporter
 from voronoi_app.parsing import PointFileParser
 from voronoi_app.rendering import build_transform
 from voronoi_app.services.diagram_service import VoronoiDiagram, VoronoiDiagramService
+from voronoi_app.theme import (
+    APP_BACKGROUND_COLOR,
+    BUTTON_ACTIVE_COLOR,
+    BUTTON_BACKGROUND_COLOR,
+    BUTTON_TEXT_COLOR,
+    CANVAS_BACKGROUND_COLOR,
+    CANVAS_BORDER_COLOR,
+    EDGE_COLOR,
+    PANEL_BACKGROUND_COLOR,
+    SITE_COLOR,
+    STATUS_TEXT_COLOR,
+    get_cell_color,
+)
 
 
 class VoronoiApp:
@@ -33,21 +57,64 @@ class VoronoiApp:
         self._diagram: VoronoiDiagram | None = None
 
         self._root.title("Voronoi Diagram Generator")
+        self._root.configure(bg=APP_BACKGROUND_COLOR)
+        self._root.minsize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT)
         self._build_widgets()
 
     def _build_widgets(self) -> None:
-        controls = tk.Frame(self._root)
-        controls.pack(fill=tk.X, padx=10, pady=10)
+        controls = tk.Frame(self._root, bg=PANEL_BACKGROUND_COLOR, padx=FRAME_PADDING, pady=FRAME_PADDING)
+        controls.pack(fill=tk.X, padx=FRAME_PADDING, pady=(FRAME_PADDING, 0))
 
-        tk.Button(controls, text="Load Points", command=self._load_points).pack(side=tk.LEFT, padx=5)
-        tk.Button(controls, text="Export SVG", command=self._export_svg).pack(side=tk.LEFT, padx=5)
-        tk.Button(controls, text="Export PNG", command=self._export_png).pack(side=tk.LEFT, padx=5)
+        button_options = {
+            "bg": BUTTON_BACKGROUND_COLOR,
+            "fg": BUTTON_TEXT_COLOR,
+            "activebackground": BUTTON_ACTIVE_COLOR,
+            "activeforeground": BUTTON_TEXT_COLOR,
+            "relief": tk.FLAT,
+            "bd": 0,
+            "padx": 10,
+            "pady": 6,
+            "cursor": "hand2",
+        }
+
+        tk.Button(controls, text="Load Points", command=self._load_points, **button_options).pack(
+            side=tk.LEFT,
+            padx=(0, CONTROL_SPACING),
+        )
+        tk.Button(controls, text="Export SVG", command=self._export_svg, **button_options).pack(
+            side=tk.LEFT,
+            padx=(0, CONTROL_SPACING),
+        )
+        tk.Button(controls, text="Export PNG", command=self._export_png, **button_options).pack(side=tk.LEFT)
 
         self._status_var = tk.StringVar(value="Load a point file to start.")
-        tk.Label(controls, textvariable=self._status_var).pack(side=tk.LEFT, padx=10)
+        tk.Label(
+            controls,
+            textvariable=self._status_var,
+            bg=PANEL_BACKGROUND_COLOR,
+            fg=STATUS_TEXT_COLOR,
+            font=("Helvetica", 10, "bold"),
+        ).pack(side=tk.LEFT, padx=(14, 0))
 
-        self._canvas = tk.Canvas(self._root, width=CANVAS_WIDTH, height=CANVAS_HEIGHT, bg="white")
-        self._canvas.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        canvas_frame = tk.Frame(
+            self._root,
+            bg=CANVAS_BORDER_COLOR,
+            padx=2,
+            pady=2,
+            highlightthickness=0,
+            bd=0,
+        )
+        canvas_frame.pack(fill=tk.BOTH, expand=True, padx=FRAME_PADDING, pady=FRAME_PADDING)
+
+        self._canvas = tk.Canvas(
+            canvas_frame,
+            width=CANVAS_WIDTH,
+            height=CANVAS_HEIGHT,
+            bg=CANVAS_BACKGROUND_COLOR,
+            highlightthickness=0,
+            bd=0,
+        )
+        self._canvas.pack(fill=tk.BOTH, expand=True)
 
     def _load_points(self) -> None:
         file_path = filedialog.askopenfilename(
@@ -76,10 +143,31 @@ class VoronoiApp:
             padding=CANVAS_PADDING,
         )
 
+        for index, site in enumerate(diagram.sites):
+            polygon = diagram.cells.get(site, [])
+            if len(polygon) < 3:
+                continue
+            fill_color = get_cell_color(index)
+            transformed_vertices = [transform(vertex) for vertex in polygon]
+            flat_coordinates = [coordinate for vertex in transformed_vertices for coordinate in vertex]
+            self._canvas.create_polygon(
+                *flat_coordinates,
+                fill=fill_color,
+                outline="",
+                smooth=False,
+            )
+
         for segment in diagram.segments:
             x1, y1 = transform(segment.start)
             x2, y2 = transform(segment.end)
-            self._canvas.create_line(x1, y1, x2, y2, fill="black")
+            self._canvas.create_line(
+                x1,
+                y1,
+                x2,
+                y2,
+                fill=EDGE_COLOR,
+                width=EDGE_WIDTH,
+            )
 
         for point in diagram.sites:
             x, y = transform(point)
@@ -88,8 +176,9 @@ class VoronoiApp:
                 y - POINT_RADIUS,
                 x + POINT_RADIUS,
                 y + POINT_RADIUS,
-                fill="red",
-                outline="red",
+                fill=SITE_COLOR,
+                outline=EDGE_COLOR,
+                width=SITE_OUTLINE_WIDTH,
             )
 
     def _export_svg(self) -> None:

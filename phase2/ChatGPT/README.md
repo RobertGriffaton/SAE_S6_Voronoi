@@ -2,6 +2,8 @@
 
 Application Python pour charger des points `x,y`, calculer un diagramme de Voronoi, afficher le résultat avec Tkinter et exporter en SVG/PNG.
 
+Le rendu affiche des cellules Voronoï colorées et remplies, avec arêtes et sites visibles.
+
 ## Installation
 
 ```bash
@@ -37,3 +39,5 @@ Une coordonnée par ligne:
 30.5,40
 -2,15
 ```
+
+Exemple prêt à l'emploi: `examples/points_sample.txt`

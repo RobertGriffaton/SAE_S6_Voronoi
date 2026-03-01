@@ -20,5 +20,7 @@ def test_Should_given_diagram_exportSvgFile(tmp_path: Path) -> None:
     content = output_file.read_text(encoding="utf-8")
     assert output_file.exists()
     assert "<svg" in content
+    assert "<polygon" in content
     assert "<line" in content
     assert "<circle" in content
+    assert "fill-opacity" in content
